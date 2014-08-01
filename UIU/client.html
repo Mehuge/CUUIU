@@ -1,0 +1,38 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+    <title>websocket client</title>
+    <script src="uiunchained.js"></script>
+    <script type="text/javascript">
+        function start() {
+            var inc = document.getElementById('incomming');
+            var form = document.getElementById('sendForm');
+            var input = document.getElementById('sendText');
+            inc.innerHTML += "connecting to server ..<br/>";
+            var uiu = UIUnchained.start();
+            uiu.onopen = function () {
+                inc.innerHTML += '.. connection open<br/>';
+            };
+            uiu.onmessage = function (data) {
+                inc.innerHTML += data + '<br/>';
+            };
+            uiu.onclose = function () {
+                inc.innerHTML += '.. connection closed<br/>';
+            }
+			form.addEventListener('submit', function(e){
+				e.preventDefault();
+				var val = input.value;
+				uiu.send(val);
+				input.value = "";
+			});            
+        }
+        window.onload = start;
+    </script>
+</head>
+<body>
+	<form id="sendForm">
+		<input id="sendText" placeholder="Text to send" />
+	</form>
+    <pre id="incomming"></pre>
+</body>
+</html>
