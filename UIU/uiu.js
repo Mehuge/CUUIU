@@ -2,10 +2,27 @@
     start: function () {
         var ws = new WebSocket('ws://localhost:8888/');
 
+        var send = function (val) {
+            ws.send(val);
+        };
+
+        var message = function (msg) {
+            send("M " + msg);
+        };
+
+        var command = function (command, args) {
+            var msg = JSON.stringify([command ].concat(args));
+            send("C " + msg);
+        };
+
+        var broadcast = function (msg) {
+            send("B " + msg);
+        };
+
         var interface = {
-            send: function (val) {
-                ws.send(val);
-            },
+            message: message,
+            command: command,
+            broadcast: broadcast,
             onmessage: function (data) { },
             onopen: function () { },
             onclose: function () { }

@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>websocket client</title>
-    <script src="uiunchained.js"></script>
+    <script src="uiu.js"></script>
     <script type="text/javascript">
         function start() {
             var inc = document.getElementById('incomming');
@@ -14,7 +14,7 @@
                 inc.innerHTML += '.. connection open<br/>';
             };
             uiu.onmessage = function (data) {
-                inc.innerHTML += data + '<br/>';
+                inc.innerHTML += 'Received: ' + data + '<br/>';
             };
             uiu.onclose = function () {
                 inc.innerHTML += '.. connection closed<br/>';
@@ -22,7 +22,9 @@
 			form.addEventListener('submit', function(e){
 				e.preventDefault();
 				var val = input.value;
-				uiu.send(val);
+				uiu.message(val);
+				uiu.broadcast(val);
+				uiu.command("echo", [val]);
 				input.value = "";
 			});            
         }
