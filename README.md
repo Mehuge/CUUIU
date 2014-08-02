@@ -12,9 +12,9 @@ considered an exploit when the game goes live.
 Building
 ========
 
-git clone https://github.com/Mehuge/CUUIU CUUIU
-cd CUUIU
-git clone https://github.com/statianzo/Fleck Fleck
+    git clone https://github.com/Mehuge/CUUIU CUUIU
+    cd CUUIU
+    git clone https://github.com/statianzo/Fleck Fleck
 
 Open CUUIU\UIU.sln in Visual Studion 2013 Express
 
