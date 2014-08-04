@@ -8,6 +8,8 @@
             var inc = document.getElementById('incomming');
             var form = document.getElementById('sendForm');
             var input = document.getElementById('sendText');
+            var key = document.getElementById('sendKey');
+            var go = document.getElementById('go');
             inc.innerHTML += "connecting to server ..<br/>";
             var uiu = UIUnchained.start();
             uiu.onopen = function () {
@@ -27,14 +29,47 @@
 				uiu.command("echo", [val]);
 				input.value = "";
 			});            
+			go.addEventListener('click', function (e) {
+			    e.preventDefault();
+			    var val = key.value.split(",");
+			    uiu.command("keypress", val);
+			    input.value = "";
+			});
         }
         window.onload = start;
     </script>
 </head>
 <body>
-	<form id="sendForm">
-		<input id="sendText" placeholder="Text to send" />
-	</form>
+    <form id="sendForm">
+        <table>
+            <tr><td>Send Test Message: <input id="sendText" placeholder="Text to send" /></td></tr>
+        </table>
+    </form>
+    <table>
+        <tr><td>Send Key: <select id="sendKey">
+            <option value="1">ESC</option>
+            <option value="15">TAB</option>
+            <option value="57">SPACE</option>
+            <option value="16,1000">Q (1000)</option>
+            <option value="17,1000">W (1000)</option>
+            <option value="18,1000">E (1000)</option>
+            <option value="19,1000">R (1000)</option>
+            <option value="20,1000">T (1000)</option>
+            <option value="21,1000">Y (1000)</option>
+            <option value="30,1000">A (1000)</option>
+            <option value="31,1000">S (1000)</option>
+            <option value="32,1000">D (1000)</option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            </select><button id="go">Go</button></td></tr>
+    </table>
     <pre id="incomming"></pre>
 </body>
 </html>

@@ -25,6 +25,10 @@ namespace UIU
                 case "echo":
                     SendMessage(socket, "echo " + message);
                     break;
+                case "keypress":
+                    int delay = request.Count > 2 ? Int32.Parse(request[2]) : 100;
+                    bot.SendKey(Int32.Parse(request[1]), delay);
+                    break;
             }
         }
         void SendMessage(IWebSocketConnection socket, string message)

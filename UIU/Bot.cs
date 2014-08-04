@@ -8,17 +8,32 @@ namespace UIU
 {
     public class Bot
     {
+        IntPtr hWnd;
+
         public Bot()
         {
-            var windows = Win32.FindWindowsWithText("Build: Beta ");
+            var windows = Win32.FindWindowsWithTextInTitle("Build: Internal ");
 
             if (windows.Count() > 0) {
-                var hWnd = windows.First();
+                hWnd = windows.First();
                 Win32.SetForegroundWindow(hWnd);
-                Thread.Sleep(500);
+                Thread.Sleep(10);
                 Win32.SetFocus(hWnd);
-                Thread.Sleep(500);
+                Thread.Sleep(10);
             }
+        }
+
+        internal void SendKey(int keyCode, int delay)
+        {
+            if (null != hWnd)
+            {
+                Win32.SetForegroundWindow(hWnd);
+                Thread.Sleep(50);
+                Win32.SetFocus(hWnd);
+                Thread.Sleep(10);
+                Win32.PressKey((short)keyCode, delay);
+            }
+
         }
     }
 }

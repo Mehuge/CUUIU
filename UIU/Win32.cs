@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Diagnostics;
 
 public class Win32
 {
@@ -54,6 +55,14 @@ public class Win32
     [DllImport("user32.dll")]
     public static extern bool IsWindowVisible(IntPtr hWnd);
 
+    [DllImport("user32", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private extern static bool EnumThreadWindows(int threadId, EnumWindowsProc callback, IntPtr lParam);
+
+    [DllImport("user32", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    static extern bool EnumChildWindows(IntPtr hwndParent, EnumWindowsProc lpEnumFunc, IntPtr lParam);
+
     public static string GetWindowText(IntPtr hWnd)
     {
         int size = GetWindowTextLength(hWnd);
@@ -67,20 +76,21 @@ public class Win32
         return String.Empty;
     }
 
-    public static IEnumerable<IntPtr> FindWindowsWithText(string text)
+    public static IEnumerable<IntPtr> FindWindowsWithTextInTitle(string text)
     {
-        IntPtr found = IntPtr.Zero;
+        IntPtr hWnd = IntPtr.Zero;
         List<IntPtr> windows = new List<IntPtr>();
-
-        EnumWindows(delegate(IntPtr wnd, IntPtr param)
+        foreach (Process pList in Process.GetProcesses())
         {
-            if (GetWindowText(wnd).Contains(text))
+            if (pList.MainWindowHandle != IntPtr.Zero)
             {
-                windows.Add(wnd);
+                if (pList.MainWindowTitle.Contains(text))
+                {
+                    hWnd = pList.MainWindowHandle;
+                    windows.Add(hWnd);
+                }
             }
-            return true;
-        }, IntPtr.Zero);
-
+        }
         return windows;
     }
 
@@ -169,8 +179,9 @@ public class Win32
 
     public static void PressKey(short keyCode, long upDelay)
     {
+        System.TimeSpan delay = TimeSpan.FromMilliseconds((double)upDelay);
         SendKey(keyCode, KeyFlag.KeyDown);
-        Thread.Sleep(100);
+        Thread.Sleep(delay);
         SendKey(keyCode, KeyFlag.KeyUp);
     }
 }
