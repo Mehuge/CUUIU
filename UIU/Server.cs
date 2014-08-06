@@ -26,7 +26,7 @@ namespace UIU
                     SendMessage(socket, "echo " + message);
                     break;
                 case "keypress":
-                    int delay = request.Count > 2 ? Int32.Parse(request[2]) : 100;
+                    int delay = request.Count > 2 && request[2] != null ? Int32.Parse(request[2]) : 100;
                     bot.SendKey(Int32.Parse(request[1]), delay);
                     break;
             }
