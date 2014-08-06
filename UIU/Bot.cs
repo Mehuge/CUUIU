@@ -31,6 +31,7 @@ namespace UIU
                 Thread.Sleep(50);
                 Win32.SetFocus(hWnd);
                 Thread.Sleep(10);
+                Console.WriteLine("KeyCode: " + keyCode + " delay " + delay);
                 Win32.PressKey((short)keyCode, delay);
             }
 
