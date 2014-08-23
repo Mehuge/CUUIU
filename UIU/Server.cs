@@ -20,14 +20,49 @@ namespace UIU
         void ProcessCommand(IWebSocketConnection socket, string message)
         {
             List<string> request = JSON.parse(message);
+            int delay;
             switch (request[0])
             {
                 case "echo":
                     SendMessage(socket, "echo " + message);
                     break;
                 case "keypress":
-                    int delay = request.Count > 2 && request[2] != null ? Int32.Parse(request[2]) : 100;
-                    bot.SendKey(Int32.Parse(request[1]), delay);
+                    delay = request.Count > 2 && request[2] != null ? Int32.Parse(request[2]) : 100;
+                    if (request[1] != null)
+                    {
+                        bot.SendKey(Int32.Parse(request[1]), delay);
+                        SendMessage(socket, "OK");
+                    }
+                    else
+                    {
+                        SendMessage(socket, "INVALID KEYCODE");
+                    }
+                    break;
+                case "turn":
+                    if (request.Count > 1 && request[1] != null)
+                    {
+                        int amount = Int32.Parse(request[1]);
+                        int step = request.Count > 2 && request[2] != null ? Int32.Parse(request[2]) : 10;
+                        delay = request.Count > 3 && request[3] != null ? Int32.Parse(request[3]) : 10; 
+                        bot.Turn(amount, step, delay);
+                        SendMessage(socket, "OK");
+                    }
+                    else { SendMessage(socket, "INVALID TURN AMOUNT"); }
+                    break;
+                case "click":
+                    if (request.Count > 1 && request[1] != null)
+                    {
+                        delay = Int32.Parse(request[1]);
+                        bot.Click(delay);
+                        SendMessage(socket, "OK");
+                    }
+                    else { SendMessage(socket, "INVALID DELAY"); }
+                    break;
+                case "memstr":
+                    int addr = request.Count > 1 && request[1] != null ? Int32.Parse(request[1], System.Globalization.NumberStyles.AllowHexSpecifier) : 0;
+                    Console.WriteLine(addr.ToString("X8"));
+                    string mem = bot.ReadMemory(addr);
+                    SendMessage(socket, mem);
                     break;
             }
         }
