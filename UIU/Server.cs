@@ -64,6 +64,9 @@ namespace UIU
                     string mem = bot.ReadMemory(addr);
                     SendMessage(socket, mem);
                     break;
+                case "cancel":
+                    bot.Cancel();
+                    break;
             }
         }
         void SendMessage(IWebSocketConnection socket, string message)

@@ -14,6 +14,7 @@ namespace UIU
         public Bot()
         {
             var processes = Win32.FindWindowsWithTextInTitle("Build: Internal ");
+            if (processes.Count() == 0) processes = Win32.FindWindowsWithTextInTitle("Build: Beta ");
             if (processes.Count() > 0)
             {
                 client = processes.First();
@@ -66,6 +67,14 @@ namespace UIU
                 Thread.Sleep(10);
                 Console.WriteLine("Click " + delay);
                 Win32.LeftMouseClick(client.MainWindowHandle, delay);
+            }
+        }
+
+        internal void Cancel()
+        {
+            if (null != client)
+            {
+                Win32.cancelInput = true;
             }
         }
 

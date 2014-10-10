@@ -11,6 +11,8 @@ public class Win32
 {
     const int PROCESS_WM_READ = 0x0010;
 
+    public static bool cancelInput = false;
+
     public class Modifiers
     {
         public const int KEYEVENTF_EXTENDEDKEY = 0x0001; // Key down flag
@@ -241,11 +243,24 @@ public class Win32
         SendKey(keyCode, KeyFlag.KeyUp);
     }
 
+    public static void CancelableDelay(long ms) {
+        cancelInput = false;
+        for (int i = 0; i < ms; i += 100)
+        {
+            if (cancelInput)
+            {
+                Debug.Print("DELAY CANCELLED AFTER " + ms + "ms");
+                cancelInput = false;
+                break;
+            }
+            Thread.Sleep(100);
+        } 
+    }
+
     public static void PressKey(short keyCode, long upDelay)
     {
-        System.TimeSpan delay = TimeSpan.FromMilliseconds((double)upDelay);
         SendKey(keyCode, KeyFlag.KeyDown);
-        Thread.Sleep(delay);
+        CancelableDelay(upDelay);
         SendKey(keyCode, KeyFlag.KeyUp);
     }
 
@@ -306,7 +321,7 @@ public class Win32
         }
         for (int i = 0; i < amount; i += step) {
             mouse_event(MOUSEEVENTF_MOVE | MOUSEEVENTF_RIGHTDOWN, (uint) (dir*step), 0, 0, UIntPtr.Zero); /// right mouse button move
-            Thread.Sleep(delay);
+            CancelableDelay(delay);
         }
         mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, UIntPtr.Zero); /// right mouse button up
         SetCursorPos(p.X, p.Y);
@@ -315,7 +330,7 @@ public class Win32
     public static void LeftMouseClick(IntPtr hWnd, int delay)
     {
         mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, UIntPtr.Zero); /// right mouse button down
-        Thread.Sleep(delay);
+        CancelableDelay(delay);
         mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, UIntPtr.Zero); /// right mouse button down
     }
 
